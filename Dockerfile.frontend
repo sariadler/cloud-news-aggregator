@@ -1,0 +1,27 @@
+# Dockerfile.frontend
+FROM python:3.10-slim
+
+# לא לבזבז זמן על prompt בזמן build
+ENV PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# התקנת תלותים של ה-UI בלבד
+COPY frontend/requirements.txt .
+RUN pip install -r requirements.txt
+
+# העתקת קוד ה-frontend
+COPY frontend/ ./frontend/
+
+# משתני סביבה שימושיים (אופציונלי)
+ENV PORT=7860
+# אם תרצי לחבר ל-backend בפרודקשן: שימי כאן או בזמן run:
+# ENV API_BASE_URL="https://your-backend.example.com"
+
+# הפורט של Gradio
+EXPOSE 7860
+
+# הפקודה שמריצה את ה-UI
+CMD ["python", "-m", "frontend.app"]

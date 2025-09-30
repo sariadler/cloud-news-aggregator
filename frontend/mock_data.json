@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "title": "AI revolutionizes healthcare",
+    "summary": "New AI systems are helping doctors detect diseases earlier.",
+    "category": "health",
+    "score": 0.95,
+    "url": "https://example.com/ai-health",
+    "imageUrl": "https://picsum.photos/300/200?1",
+    "publishedAt": "2025-09-20T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "title": "Tech giants invest in quantum computing",
+    "summary": "Major companies are racing to build scalable quantum machines.",
+    "category": "tech",
+    "score": 0.92,
+    "url": "https://example.com/quantum",
+    "imageUrl": "https://picsum.photos/300/200?2",
+    "publishedAt": "2025-09-20T11:00:00Z"
+  },
+  {
+    "id": "3",
+    "title": "Elections 2025: record turnout expected",
+    "summary": "Citizens are showing high engagement in the upcoming elections.",
+    "category": "politics",
+    "score": 0.88,
+    "url": "https://example.com/elections",
+    "imageUrl": "https://picsum.photos/300/200?3",
+    "publishedAt": "2025-09-20T12:00:00Z"
+  },
+  {
+    "id": "4",
+    "title": "SpaceX launches new satellite",
+    "summary": "A new communication satellite is now in orbit.",
+    "category": "world",
+    "score": 0.91,
+    "url": "https://example.com/spacex",
+    "imageUrl": "https://picsum.photos/300/200?4",
+    "publishedAt": "2025-09-20T13:00:00Z"
+  },
+  {
+    "id": "5",
+    "title": "Breakthrough in renewable energy storage",
+    "summary": "Scientists developed a more efficient battery for solar energy.",
+    "category": "business",
+    "score": 0.89,
+    "url": "https://example.com/renewable",
+    "imageUrl": "https://picsum.photos/300/200?5",
+    "publishedAt": "2025-09-20T14:00:00Z"
+  },
+  {
+    "id": "6",
+    "title": "Football world cup kicks off",
+    "summary": "Fans are gathering worldwide to celebrate the start of the tournament.",
+    "category": "sport",
+    "score": 0.87,
+    "url": "https://example.com/worldcup",
+    "imageUrl": "https://picsum.photos/300/200?6",
+    "publishedAt": "2025-09-20T15:00:00Z"
+  },
+  {
+    "id": "7",
+    "title": "Stock markets rally after tech boom",
+    "summary": "Shares in tech companies rose significantly today.",
+    "category": "business",
+    "score": 0.86,
+    "url": "https://example.com/stocks",
+    "imageUrl": "https://picsum.photos/300/200?7",
+    "publishedAt": "2025-09-20T16:00:00Z"
+  },
+  {
+    "id": "8",
+    "title": "Medical breakthrough in cancer research",
+    "summary": "New drug shows promise in treating aggressive cancers.",
+    "category": "health",
+    "score": 0.94,
+    "url": "https://example.com/cancer",
+    "imageUrl": "https://picsum.photos/300/200?8",
+    "publishedAt": "2025-09-20T17:00:00Z"
+  },
+  {
+    "id": "9",
+    "title": "AI wins international chess tournament",
+    "summary": "Artificial intelligence defeated top human players.",
+    "category": "tech",
+    "score": 0.93,
+    "url": "https://example.com/chess",
+    "imageUrl": "https://picsum.photos/300/200?9",
+    "publishedAt": "2025-09-20T18:00:00Z"
+  },
+  {
+    "id": "10",
+    "title": "World leaders meet for climate summit",
+    "summary": "Talks focus on reducing global emissions by 2030.",
+    "category": "politics",
+    "score": 0.90,
+    "url": "https://example.com/climate",
+    "imageUrl": "https://picsum.photos/300/200?10",
+    "publishedAt": "2025-09-20T19:00:00Z"
+  }
+]
