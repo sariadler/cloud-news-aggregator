@@ -2,8 +2,8 @@ from transformers import pipeline
 from backend.models.schemas import CATEGORIES
 
 # הטעינה הראשונה יכולה לקחת זמן – תקין
-_zero_shot = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-_ner = pipeline("ner", grouped_entities=True)
+_zero_shot = pipeline("zero-shot-classification", model="sshleifer/tiny-distilroberta-base")
+_ner = pipeline("ner", model="dslim/bert-base-NER", grouped_entities=True)
 
 def classify_topic(text: str) -> str:
     res = _zero_shot(text, CATEGORIES)
