@@ -109,8 +109,8 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
 
         # --- פונקציות עזר ---
 
-        def _update_all(cat, lim, q, sb, ord_, page, psize):
-            cards, tbl, data, titles, total = update_all_with_state(cat, lim, q, sb, ord_, page, psize)
+        def update_all(cat, lim, q, sb, ord, page, psize):
+            cards, tbl, data, titles, total = update_all_with_state(cat, lim, q, sb, ord, page, psize)
             total_text = f"סה\"כ תוצאות: {total} | עמוד {page}"
             return (
                 cards, tbl, data,
@@ -134,14 +134,14 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
 
         # טעינה ראשונית
         demo.load(_set_loading, None, [loading_md]).then(
-            _update_all,
+            update_all,
             inputs=[category, limit, query, sort_by, order, page_state, page_size],
             outputs=[cards_html, table, data_state, chosen, total_md]
         ).then(_clear_loading, None, [loading_md])
 
         # רענון
         refresh.click(_set_loading, None, [loading_md]).then(
-            _update_all,
+            update_all,
             inputs=[category, limit, query, sort_by, order, page_state, page_size],
             outputs=[cards_html, table, data_state, chosen, total_md]
         ).then(_clear_loading, None, [loading_md])
@@ -151,7 +151,7 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
             comp.change(_reset_page, None, page_state).then(
                 _set_loading, None, [loading_md]
             ).then(
-                _update_all,
+                update_all,
                 inputs=[category, limit, query, sort_by, order, page_state, page_size],
                 outputs=[cards_html, table, data_state, chosen, total_md]
             ).then(_clear_loading, None, [loading_md])
@@ -163,7 +163,7 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
         next_btn.click(_next, inputs=[page_state], outputs=[page_state]).then(
             _set_loading, None, [loading_md]
         ).then(
-            _update_all,
+            update_all,
             inputs=[category, limit, query, sort_by, order, page_state, page_size],
             outputs=[cards_html, table, data_state, chosen, total_md]
         ).then(_clear_loading, None, [loading_md])
@@ -171,7 +171,7 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
         prev_btn.click(_prev, inputs=[page_state], outputs=[page_state]).then(
             _set_loading, None, [loading_md]
         ).then(
-            _update_all,
+            update_all,
             inputs=[category, limit, query, sort_by, order, page_state, page_size],
             outputs=[cards_html, table, data_state, chosen, total_md]
         ).then(_clear_loading, None, [loading_md])
@@ -179,7 +179,7 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
         # Polling
         poller = gr.Timer(15.0)
         poller.tick(
-            _update_all,
+            update_all,
             inputs=[category, limit, query, sort_by, order, page_state, page_size],
             outputs=[cards_html, table, data_state, chosen, total_md]
         )

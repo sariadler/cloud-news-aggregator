@@ -1,3 +1,4 @@
+# infra/docker-compose.yml
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
@@ -15,25 +16,74 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"      # פורט ל-host
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-
-      # שתי מאזינות: אחת פנימית לרשת הדוקר, אחת ל-host
       KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092"
-
-      # מה מפרסמים ללקוחות: ל-host -> localhost:9092, לקונטיינרים -> kafka:29092
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092"
-
-      # מפה בין שמות המאזינות לפרוטוקול
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"
-
-      # הגדרות מינימום לקלאסטר של broker יחיד
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile.backend   # נשתמש בקובץ החדש שיצרת ל-backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../backend/.env
+    environment:
+      - KAFKA_BROKER=kafka:29092
+      - DB_URL=mongodb://mongo:27017
+    depends_on:
+      - kafka
+      - mongo
+    restart: unless-stopped
+
+  consumer:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: consumer
+    command: python consumer.py      # ✅ תיקון: היה כתוב "onsumer.py"
+    volumes:
+      - ../infra:/app
+    working_dir: /app
+    environment:
+      - KAFKA_BROKER=kafka:29092
+      - DB_URL=mongodb://mongo:27017
+    depends_on:
+      - kafka
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "7860:7860"
+    environment:
+      - API_BASE_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

@@ -4,6 +4,7 @@ from backend.models.schemas import News
 from backend.repositories.news_repo import NewsRepository, InMemoryNewsRepository
 from backend.providers.news_provider import fetch_latest
 from backend.ai.nlp import classify_topic, extract_entities
+from frontend.services.kafka_service import publish_batch
 
 _repo: NewsRepository = InMemoryNewsRepository()
 
@@ -13,6 +14,7 @@ def set_repo(repo: NewsRepository):
 
 def pull_and_process(limit: int = 10) -> List[str]:
     raw = fetch_latest(limit)
+    publish_batch(raw)
     ids: List[str] = []
     for it in raw:
         text = f"{it.get('title','')} {it.get('summary','')}"

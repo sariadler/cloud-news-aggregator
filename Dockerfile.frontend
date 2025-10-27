@@ -1,26 +1,17 @@
 # Dockerfile.frontend
 FROM python:3.10-slim
 
-# לא לבזבז זמן על prompt בזמן build
-ENV PIP_NO_CACHE_DIR=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
+# תיקייה שבה יפעל הקוד
 WORKDIR /app
 
-# התקנת תלותים של ה-UI בלבד
+# התקנת הספריות מה-frontend
 COPY frontend/requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
 # העתקת קוד ה-frontend
 COPY frontend/ ./frontend/
 
-# משתני סביבה שימושיים (אופציונלי)
-ENV PORT=7860
-# אם תרצי לחבר ל-backend בפרודקשן: שימי כאן או בזמן run:
-# ENV API_BASE_URL="https://your-backend.example.com"
-
-# הפורט של Gradio
+# פתיחת הפורט של Gradio
 EXPOSE 7860
 
 # הפקודה שמריצה את ה-UI

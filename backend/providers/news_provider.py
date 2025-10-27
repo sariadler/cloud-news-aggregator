@@ -40,6 +40,8 @@ def _safe_call(url: str, params: dict) -> Optional[dict]:
         return None
 
 def fetch_latest(limit: int = 10) -> List[Dict]:
+    print("🔥🔥🔥 נכנסנו ל־fetch_latest 🔥🔥🔥")
+
     """
     מחזיר ידיעות גולמיות:
     {title,url,summary,published_at}
@@ -48,6 +50,8 @@ def fetch_latest(limit: int = 10) -> List[Dict]:
     2) אם נכשל/ריק -> everything לפי שאילתה כללית
     3) אם עדיין אין -> דמה (כדי שתמיד יעבוד)
     """
+    print("✅ NEWSAPI_KEY = ", NEWSAPI_KEY[:5], "...")
+
     # 0) אם אין KEY – דמה
     if not NEWSAPI_KEY:
         return _repeat_to_limit(_DUMMY, limit)
@@ -60,9 +64,11 @@ def fetch_latest(limit: int = 10) -> List[Dict]:
         "apiKey": NEWSAPI_KEY,
     }
     data = _safe_call(url1, p1)
+    print("🔎 top-headlines response:", data)
 
     # 2) אם נכשל או אין תוצאות – ננסה everything (לפי נושאים כלליים)
     if not data or not data.get("articles"):
+        print("⚠️ top-headlines empty, trying fallback")
         url2 = "https://newsapi.org/v2/everything"
         p2 = {
             "q": "technology OR science OR politics OR sports OR culture",
@@ -86,5 +92,7 @@ def fetch_latest(limit: int = 10) -> List[Dict]:
             "summary": a.get("description"),
             "published_at": a.get("publishedAt"),
         })
+    print("✅ Final output:", out)
+
     # אם משום מה לא גזרנו כלום – דמה
     return out if out else _repeat_to_limit(_DUMMY, limit)

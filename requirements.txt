@@ -1,8 +1,9 @@
-fastapi 
-uvicorn 
-requests 
-transformers 
-torch 
-gradio 
-pydantic 
-python-dotenv 
+fastapi
+uvicorn
+requests
+transformers
+torch
+gradio
+pydantic
+python-dotenv
+huggingface_hub

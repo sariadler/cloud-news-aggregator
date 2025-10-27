@@ -1,0 +1,12 @@
+FROM python:3.10-slim
+
+WORKDIR /app/backend
+
+# שימי לב: הקובץ requirements.txt נמצא בתיקייה הראשית, לכן ../
+COPY ../requirements.txt /app/requirements.txt
+
+RUN pip install --no-cache-dir -r /app/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu --timeout 1000 --retries 10
+
+COPY . .
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80"]

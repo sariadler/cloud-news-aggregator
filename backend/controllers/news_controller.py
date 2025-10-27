@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
-from backend.models.schemas import PreferencesIn
 from backend.services import news_service
+from backend.models.schemas import PreferencesIn
+from backend.providers import news_provider
+
 from backend.views.news_view import render_news, render_list
 
 router = APIRouter()
@@ -32,3 +34,4 @@ def get_news(news_id: str):
 def list_news(topic: Optional[str] = None, limit: int = 10):
     items = news_service.list_news(topic=topic, limit=limit)
     return render_list(items)
+
