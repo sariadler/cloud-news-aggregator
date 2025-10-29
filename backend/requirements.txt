@@ -11,3 +11,5 @@ pymongo
 python-dotenv
 kafka-python
 python-multipart
+schedule
+

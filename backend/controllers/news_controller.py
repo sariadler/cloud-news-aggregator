@@ -35,3 +35,5 @@ def list_news(topic: Optional[str] = None, limit: int = 10):
     items = news_service.list_news(topic=topic, limit=limit)
     return render_list(items)
 
+
+
