@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-requests
-transformers
-torch
-gradio
-pydantic
-python-dotenv
-huggingface_hub

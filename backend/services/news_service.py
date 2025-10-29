@@ -4,7 +4,8 @@ from backend.models.schemas import News
 from backend.repositories.news_repo import NewsRepository, InMemoryNewsRepository
 from backend.providers.news_provider import fetch_latest
 from backend.ai.nlp import classify_topic, extract_entities
-from frontend.services.kafka_service import publish_batch
+from backend.services.kafka_producer import publish_batch
+
 
 _repo: NewsRepository = InMemoryNewsRepository()
 
