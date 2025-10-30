@@ -15,3 +15,4 @@ class News(BaseModel):
     published_at: Optional[str] = None
     topic: Optional[str] = None
     entities: List[str] = []
+    imageUrl: Optional[str] = None

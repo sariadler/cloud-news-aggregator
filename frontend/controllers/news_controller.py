@@ -219,6 +219,9 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
         url = a.get("url") or ""
         published = html.escape(a.get("publishedAt", "") or "")
         image = a.get("imageUrl") or ""
+        print(f"🖼️ Image URL: {image}")  
+        if  not image:
+            image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1729000000/placeholder.jpg"
         try:
             score = float(a.get("score", 0.0))
         except Exception:
@@ -228,7 +231,7 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
 
         parts.append(f"""
           <div class="card">
-            {'<img src="'+image+'" alt="'+title+'">' if image else ''}
+            {f'<img src="{image}" alt="{title}">' if image else ''}
             <h3>{title}</h3>
             <div class="meta">קטגוריה: {cat} · ציון: {score:.2f} · תאריך: {published}</div>
             <p>{summary}</p>

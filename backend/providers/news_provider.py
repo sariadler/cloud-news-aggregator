@@ -91,6 +91,7 @@ def fetch_latest(limit: int = 10) -> List[Dict]:
             "url": a.get("url"),
             "summary": a.get("description"),
             "published_at": a.get("publishedAt"),
+            "imageUrl": a.get("urlToImage"),
         })
     print("✅ Final output:", out)
 
