@@ -26,8 +26,6 @@ class InMemoryNewsRepository(NewsRepository):
 
 from pymongo import MongoClient
 import os
-
-
 class MongoNewsRepository(NewsRepository):
     def __init__(self):
         mongo_url = os.getenv("MONGO_URL", "mongodb://mongo:27017")
@@ -41,9 +39,12 @@ class MongoNewsRepository(NewsRepository):
 
     def save(self, item: News) -> None:
         data = item.dict()
-        # כדי למנוע כפילויות  
-        data["_id"] = data["id"]
-        self.collection.replace_one({"_id": data["_id"]}, data, upsert=True)
+
+        # המזהה הייחודי לכתבה הוא ה־URL עצמו
+        unique_key = {"url": data["url"]}
+
+        # עדכון אם קיים, הוספה אם לא
+        self.collection.update_one(unique_key, {"$set": data}, upsert=True)
 
     def get(self, news_id: str) -> Optional[News]:
         doc = self.collection.find_one({"_id": news_id})
@@ -54,5 +55,41 @@ class MongoNewsRepository(NewsRepository):
         if topic and topic != "all":
             query["topic"] = topic
 
-        docs = self.collection.find(query).sort("published_at", -1).limit(limit)
+        docs = (
+            self.collection
+            .find(query)
+            .sort("published_at", -1)
+            .limit(limit)
+        )
+
         return [News(**d) for d in docs]
+
+
+# class MongoNewsRepository(NewsRepository):
+#     def __init__(self):
+#         mongo_url = os.getenv("MONGO_URL", "mongodb://mongo:27017")
+#         client = MongoClient(mongo_url)
+
+#         db_name = os.getenv("MONGO_DB", "newsdb")
+#         self.db = client[db_name]
+
+#         # שם הקולקציה
+#         self.collection = self.db["news"]
+
+#     def save(self, item: News) -> None:
+#         data = item.dict()
+#         # כדי למנוע כפילויות  
+#         data["_id"] = data["id"]
+#         self.collection.replace_one({"_id": data["_id"]}, data, upsert=True)
+
+#     def get(self, news_id: str) -> Optional[News]:
+#         doc = self.collection.find_one({"_id": news_id})
+#         return News(**doc) if doc else None
+
+#     def list(self, topic: str | None = None, limit: int = 10) -> List[News]:
+#         query = {}
+#         if topic and topic != "all":
+#             query["topic"] = topic
+
+#         docs = self.collection.find(query).sort("published_at", -1).limit(limit)
+#         return [News(**d) for d in docs]

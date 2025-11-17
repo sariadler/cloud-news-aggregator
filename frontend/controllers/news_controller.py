@@ -221,7 +221,7 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
         image = a.get("imageUrl") or ""
         print(f"🖼️ Image URL: {image}")  
         if not image:
-            image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1729000000/placeholder.jpg"
+            image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1763063593/ChatGPT_Image_Nov_13_2025_09_52_48_PM_fw5jyy.png"
 
         try:
             score = float(a.get("score", 0.0))
