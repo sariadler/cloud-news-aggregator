@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import cloudinary
 
+from backend.config import NEWSAPI_KEY
+
 ENV_PATH = Path(__file__).resolve().parent / ".env"
 load_dotenv(ENV_PATH)
 
@@ -14,3 +16,4 @@ cloudinary.config(
     secure=True,
 )
 CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+print("DEBUG NEWSAPI_KEY =", NEWSAPI_KEY)

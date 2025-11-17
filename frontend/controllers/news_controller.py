@@ -220,12 +220,14 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
         published = html.escape(a.get("publishedAt", "") or "")
         image = a.get("imageUrl") or ""
         print(f"🖼️ Image URL: {image}")  
-        if  not image:
+        if not image:
             image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1729000000/placeholder.jpg"
+
         try:
             score = float(a.get("score", 0.0))
         except Exception:
             score = 0.0
+
         if summary and len(summary) > 300:
             summary = summary[:300].rstrip() + "…"
 
@@ -238,8 +240,21 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
             {f'<a class="btn" href="{url}" target="_blank" rel="noopener">קראי עוד →</a>' if url else ''}
           </div>
         """)
-    return '<div class="cards-grid">' + "".join(parts) + '</div>'
 
+    # 🧠 הוספת CSS שמתקן את התמונות
+    styles = """
+    <style>
+    .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+    }
+    </style>
+    """
+
+    return styles + '<div class="cards-grid">' + "".join(parts) + '</div>'
 
 def _articles_to_cards_md(items):
     # תאימות לשם הישן – מחזיר את ה-HTML החדש

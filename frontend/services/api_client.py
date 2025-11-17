@@ -28,6 +28,19 @@ class MockNewsClient(NewsClient):
         return items[:limit]
 
 # --- מימוש HTTP אמיתי ל־Backend ---
+# class HttpNewsClient(NewsClient):
+#     def __init__(self, base_url: str):
+#         self.base_url = (base_url or "").rstrip("/")
+
+#     def list_news(self, category: Optional[str]=None, limit: int=20) -> Articles:
+#         params = {"limit": limit}
+#         if category and category != "all":
+#             params["category"] = category
+#         r = requests.get(f"{self.base_url}/news", params=params, timeout=10)
+#         r.raise_for_status()
+#         return r.json()  # חייב להתאים לסכמה בצד ה-Controller
+
+
 class HttpNewsClient(NewsClient):
     def __init__(self, base_url: str):
         self.base_url = (base_url or "").rstrip("/")
@@ -36,6 +49,25 @@ class HttpNewsClient(NewsClient):
         params = {"limit": limit}
         if category and category != "all":
             params["category"] = category
+        
         r = requests.get(f"{self.base_url}/news", params=params, timeout=10)
         r.raise_for_status()
-        return r.json()  # חייב להתאים לסכמה בצד ה-Controller
+        raw_list = r.json()
+
+        normalized = []
+        for a in raw_list:
+            normalized.append({
+                "title": a.get("title", ""),
+                "summary": a.get("summary", ""),
+                "url": a.get("url", ""),
+                "publishedAt": a.get("publishedAt") or a.get("published_at") or "",
+                "category": a.get("category", ""),
+                "entities": a.get("entities", []),
+                "score": a.get("score", 0),
+                
+                # 👇 זה הכי חשוב
+                "imageUrl": a.get("imageUrl") or a.get("image") or a.get("urlToImage") or "",
+            })
+
+        return normalized
+
