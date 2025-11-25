@@ -29,6 +29,7 @@ import os
 class MongoNewsRepository(NewsRepository):
     def __init__(self):
         mongo_url = os.getenv("MONGO_URL", "mongodb://mongo:27017")
+        print("🔗 CONNECTING TO MONGO:", mongo_url)
         client = MongoClient(mongo_url)
 
         db_name = os.getenv("MONGO_DB", "newsdb")

@@ -185,3 +185,6 @@ def build_ui(update_all_with_state: UpdateWithStateFn, detail_by_index: DetailFn
         )
 
     return demo
+
+
+

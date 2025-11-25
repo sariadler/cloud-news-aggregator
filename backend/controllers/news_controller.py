@@ -1,3 +1,4 @@
+from time import time
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from backend.services import news_service

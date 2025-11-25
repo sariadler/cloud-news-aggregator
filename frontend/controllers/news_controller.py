@@ -178,6 +178,7 @@ def get_article_detail_md(article: Dict[str, Any]) -> str:
 """
 
 
+
 def update_all_with_state(category: str, limit: int, q: str,
                           sort_by: str = "publishedAt", order: str = "desc",
                           page: int = 1, page_size: int = 9):
@@ -221,7 +222,7 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
         image = a.get("imageUrl") or ""
         print(f"🖼️ Image URL: {image}")  
         if not image:
-            image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1763063593/ChatGPT_Image_Nov_13_2025_09_52_48_PM_fw5jyy.png"
+            image = "https://res.cloudinary.com/drelmxm3a/image/upload/v1763633975/ChatGPT_Image_Nov_20_2025_12_16_09_PM_vjucqv.png"
 
         try:
             score = float(a.get("score", 0.0))
@@ -235,7 +236,7 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
           <div class="card">
             {f'<img src="{image}" alt="{title}">' if image else ''}
             <h3>{title}</h3>
-            <div class="meta">קטגוריה: {cat} · ציון: {score:.2f} · תאריך: {published}</div>
+            <div class="meta">category: {cat} · score: {score:.2f} · date: {published}</div>
             <p>{summary}</p>
             {f'<a class="btn" href="{url}" target="_blank" rel="noopener">קראי עוד →</a>' if url else ''}
           </div>
@@ -259,3 +260,5 @@ def get_news_cards_html_from_items(items: List[Dict[str, Any]]) -> str:
 def _articles_to_cards_md(items):
     # תאימות לשם הישן – מחזיר את ה-HTML החדש
     return get_news_cards_html_from_items(items)
+
+
