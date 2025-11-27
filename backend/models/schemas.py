@@ -17,3 +17,5 @@ class News(BaseModel):
     topic: Optional[str] = None
     entities: List[str] = []
     imageUrl: Optional[str] = None
+    score: float = 0.0
+

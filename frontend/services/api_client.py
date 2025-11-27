@@ -27,19 +27,6 @@ class MockNewsClient(NewsClient):
             items = [a for a in items if a.get("category","").lower() == category.lower()]
         return items[:limit]
 
-# --- מימוש HTTP אמיתי ל־Backend ---
-# class HttpNewsClient(NewsClient):
-#     def __init__(self, base_url: str):
-#         self.base_url = (base_url or "").rstrip("/")
-
-#     def list_news(self, category: Optional[str]=None, limit: int=20) -> Articles:
-#         params = {"limit": limit}
-#         if category and category != "all":
-#             params["category"] = category
-#         r = requests.get(f"{self.base_url}/news", params=params, timeout=10)
-#         r.raise_for_status()
-#         return r.json()  # חייב להתאים לסכמה בצד ה-Controller
-
 
 class HttpNewsClient(NewsClient):
     def __init__(self, base_url: str):

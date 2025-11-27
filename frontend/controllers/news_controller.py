@@ -23,7 +23,7 @@ http_client: Optional[HttpNewsClient] = HttpNewsClient(API_BASE_URL) if API_BASE
 mock_client = MockNewsClient()
 client = http_client or mock_client  # if there is no http_client, use the mock_client
 
-CATEGORIES = ["all", "tech", "politics", "sport", "business", "world", "health"]
+CATEGORIES = ["Politics", "Finance", "Science", "Culture", "Sport"]
 
 
 # ---------- עזר: מיון ועימוד ----------
@@ -64,49 +64,62 @@ def _paginate(items: List[Dict[str, Any]], page: int, page_size: int) -> Tuple[L
     end = start + page_size
     return items[start:end], total
 
-
-# ---------- שליפה + סינון + מיון ----------
+# ---------- פונקציית שליפה מרכזית ----------
 def _fetch(category: str = "all", limit: int = 50, q: str = "",
            sort_by: str = "publishedAt", order: str = "desc") -> List[Dict[str, Any]]:
     """
-    מחזיר רשימת כתבות (dict) אחרי סינון בסיסי,
-    מיון לפי השדות המבוקשים, ועד LIMIT (לפני עימוד ב-UI).
-    כולל Fallback למוק אם ה-HTTP נכשל.
+    מביא כתבות מהשרת → מסנן בפרונט → ממיין → מחזיר ל-UI.
     """
-    # שליפה
-    try:
-        data = (client or mock_client).list_news(
-            category=None if category == "all" else category,
-            limit=limit
-        )
-    except Exception:
-        # Fallback בטוח
-        data = mock_client.list_news(
-            category=None if category == "all" else category,
-            limit=limit
-        )
 
-    # חיפוש טקסטואלי
+    # 1) שליפה מהבקאנד (ללא category — תמיד מחזירים הכל)
+    try:
+        data = (client or mock_client).list_news(limit=limit)
+    except Exception:
+        data = mock_client.list_news(limit=limit)
+
+    # --- פונקציה פנימית לאחידות תאריך ---
+    def normalize_date(value: str) -> str:
+        """מחזירה רק YYYY-MM-DD גם אם הגיע עם שעה."""
+        if not value:
+            return ""
+        if "T" in value:
+            return value.split("T")[0]  # חותך את השעה
+        return value  # כבר בפורמט נכון
+
+    # 2) נורמליזציה של שמות שדות
+    for a in data:
+        # category → topic → "" 
+        a["category"] = a.get("category") or a.get("topic", "") or ""
+
+        # publishedAt → published_at → normalized date
+        raw_date = a.get("publishedAt") or a.get("published_at") or ""
+        a["publishedAt"] = normalize_date(raw_date)
+
+    # 3) סינון לפי קטגוריה
+    if category and category != "all":
+        cat_l = category.lower()
+        data = [a for a in data if a.get("category", "").lower() == cat_l]
+
+    # 4) חיפוש טקסטואלי
     if q:
         ql = q.lower()
-        data = [a for a in data
-                if ql in (a.get("title", "")).lower()
-                or ql in (a.get("summary", "")).lower()]
+        data = [
+            a for a in data
+            if ql in a.get("title", "").lower()
+            or ql in a.get("summary", "").lower()
+        ]
 
-    # מיון במקום
+    # 5) מיון
     _apply_sort(data, sort_by=sort_by, order=order)
 
-        # ... אחרי שמיינו/סיננו ויש לנו data:
-    # אם תרצי לשלוח *לפני* המיון/סינון, הזיזי את הקריאה למעלה.
+    # 6) Kafka (לא חובה)
     if ENABLE_KAFKA:
         try:
-            # שולחים את מה שחזר (עד LIMIT) כדי שלא להציף
             publish_batch(data)
         except Exception:
-            # לא להפיל את ה-UI
             pass
-    return data
 
+    return data
 
 # ---------- בניית יציאות ל-View ----------
 def _article_to_table_row(a: Dict[str, Any]) -> List[Any]:
@@ -140,9 +153,9 @@ def get_news_table(category: str = "all", limit: int = 50, q: str = "",
     return _articles_to_table(data)
 
 
-def update_all(category: str, limit: int, q: str):
-    """גרסה ישנה (שמורה תאימות): כרטיסיות + טבלה, ללא עימוד."""
-    return get_news_cards_html(category, limit, q), get_news_table(category, limit, q)
+# def update_all(category: str, limit: int, q: str):
+#     """גרסה ישנה (שמורה תאימות): כרטיסיות + טבלה, ללא עימוד."""
+#     return get_news_cards_html(category, limit, q), get_news_table(category, limit, q)
 
 
 def list_titles(category: str = "all", limit: int = 50, q: str = "",
@@ -170,7 +183,7 @@ def get_article_detail_md(article: Dict[str, Any]) -> str:
     link = f"[פתחי מקור →]({url})" if url else ""
     return f"""## {title}
 
-{img_md}**קטגוריה:** {cat} · **ציון:** {score:.2f} · **תאריך:** {published}
+{img_md}**category:** {cat} · **score:** {score:.2f} · **date:** {published}
 
 {summary}
 

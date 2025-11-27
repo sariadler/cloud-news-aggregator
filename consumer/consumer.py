@@ -6,7 +6,7 @@ import os
 # ---- הגדרות סביבה ----
 BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:29092")
 TOPIC = os.getenv("TOPIC_NEWS_CLASSIFIED", "news.classified")
-MONGO_URL = os.getenv("DB_URL", "mongodb://localhost:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 DB_NAME = os.getenv("MONGO_DB_NAME", "cloud_news")
 COLLECTION_NAME = os.getenv("MONGO_COLLECTION", "articles")
 

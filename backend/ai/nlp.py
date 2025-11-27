@@ -2,13 +2,17 @@ from transformers import pipeline
 from backend.models.schemas import CATEGORIES
 
 # הטעינה הראשונה יכולה לקחת זמן – תקין
-_zero_shot = pipeline("zero-shot-classification", model="sshleifer/tiny-distilroberta-base")
+_zero_shot = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-1")
 _ner = pipeline("ner", model="dslim/bert-base-NER", grouped_entities=True)
-
-def classify_topic(text: str) -> str:
+ 
+def classify_topic(text: str):
     res = _zero_shot(text, CATEGORIES)
-    return res["labels"][0] if isinstance(res, dict) and res.get("labels") else CATEGORIES[0]
+    label = res["labels"][0]
+    score = float(res["scores"][0])
+    return label, score
 
+
+# פונקציה שמחלצת ישויות מטקסט
 def extract_entities(text: str, max_chars: int = 800):
     ents = _ner(text[:max_chars])
     out = []

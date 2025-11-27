@@ -52,18 +52,22 @@ def pull_and_process(limit: int = 10) -> List[str]:
     for it in raw:
         print("DEBUG RAW ITEM:", it)
         text = f"{it.get('title','')} {it.get('summary','')}"
-        topic = classify_topic(text)
+        topic, score = classify_topic(text)
         ents  = extract_entities(text)
         
         image_url = it.get("imageUrl") or _pick_image_url(it)
+
+        published_raw = it.get("published_at", "")
+        published_at = published_raw.split("T")[0]
 
         news = News(
             id=str(uuid.uuid4()),
             title=it.get("title",""),
             summary=it.get("summary"),
             url=it.get("url"),
-            published_at=it.get("published_at"),
+            published_at=published_at,
             topic=topic,
+            score=score, 
             entities=ents,
             imageUrl=image_url # 👈 חדש
         )

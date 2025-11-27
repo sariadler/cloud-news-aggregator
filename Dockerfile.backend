@@ -1,4 +1,6 @@
+
 FROM python:3.10-slim
+ENV PIP_REQUIRE_HASHES=0
 
 # יצירת תיקיית עבודה
 WORKDIR /app
